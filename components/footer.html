@@ -1,0 +1,39 @@
+<footer>
+    <div class="footer-wrapper">
+
+        <div style="margin: 0 auto;padding: 10px;width: fit-content;position: relative">
+            <span id="text">this is star wars api ui</span>
+            <div class="tooltip_wrapper" style="display: none">
+                <div class="tooltip-container">Здесь текст тултипа</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let tooltip = document.querySelector('.tooltip_wrapper');
+        let tooltipText = document.querySelector('#text');
+        let isToolTipActive = false;
+
+        tooltipText.addEventListener('mouseover', () => {
+          tooltip.style.display = 'block';
+        })
+
+        tooltipText.addEventListener('mouseleave', () => {
+          setTimeout(function () {
+                if (!isToolTipActive){
+                    tooltip.style.display = 'none';
+                }
+            },1000)
+        })
+
+        tooltip.addEventListener('mouseover', () => {
+          isToolTipActive = true;
+        })
+
+        tooltip.addEventListener('mouseleave',()=>{
+            tooltip.style.display = 'none';
+            isTooltipActive = false; 
+        });
+    </script>
+
+</footer>

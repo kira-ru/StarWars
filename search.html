@@ -1,0 +1,84 @@
+  <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SEARCH VUE</title>
+    <link rel="stylesheet" href="css/materialize.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="css/search.css">
+</head>
+<body>
+
+    <div id="search">
+
+        <a class="viewed-btn btn-floating waves-effect" v-on:click="switcher = !switcher"><i class="material-icons">turned_in_not</i></a>
+
+        <div class="viewed-menu card" v-if="switcher">
+            <ul v-if="viewedFilms.length>0">
+              <li v-for='film in viewedFilms'>
+                <span>{{ film.title }}</span>  
+                <a class="btn btn-small" v-on:click="deleteFilm(film)">удалить</a>
+              </li>
+            </ul>
+            <span v-else>нет просмотренных фильмов</span>
+        </div>
+        
+  
+          <h5>{{header}}</h5>
+  
+          <div id="search-console">
+            <input type="text" id="search-input" style="color: #595959" v-model="request">
+        </div>
+        
+        <div class="card film-card" v-for="(film, index) in filterFilms" :id='index'>
+          <p>{{++index}}: {{ film.title }}</p>
+          <a class="btn waves-effect" v-on:click="addFilm(film)">Добавить в закладку</a>
+        </div>
+
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+
+    <script>
+        let vm = new Vue({
+            el: '#search',
+            data: {
+              request: "search",
+              films: [],
+              switcher: false,
+              viewedFilms: []
+            },
+            computed: {
+              header() {
+                return this.request === '' || this.request === 'search' ? "Nothing to search": `Search: ${this.request}`
+              },
+              filterFilms() {
+                if (this.request !== '' && this.request !== ' ' && this.request !== "search" ) {
+                  return this.films.filter( el => el.title.toLowerCase().includes( this.request.toLowerCase()))
+                } else {
+                  return this.films
+                }
+              }
+            },  
+            methods: {
+              addFilm(film) {
+                if ( !this.viewedFilms.find( viewedFilm => viewedFilm.title === film.title )) {
+                  this.viewedFilms.push(film);
+                }
+                this.switcher = true;
+                setTimeout(() => {this.switcher = !this.switcher}, 2000 )
+              },
+              deleteFilm(film) {
+                this.viewedFilms = this.viewedFilms.filter((elem) => elem.title !== film.title );
+              }
+            },
+            async mounted() {
+                this.films = await fetch('https://swapi.dev/api/films/').then(data => data.json()).then(res => res.results);
+                console.log(this.films)
+              }
+        })
+    </script>
+
+</body>
+</html>
